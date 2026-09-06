@@ -1,0 +1,5 @@
+# Kivi Personal Phonetic Memory - prototype dependencies
+# Core logic is stdlib-only. These are only for the HTTP API.
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9
