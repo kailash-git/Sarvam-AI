@@ -257,10 +257,3 @@ def index():
     if idx.exists():
         return idx.read_text(encoding="utf-8")
     return "<h1>Kivi</h1><p>frontend/index.html missing</p>"
-
-
-# --- static assets (frontend/styles.css et al) -------------------------------
-from fastapi.staticfiles import StaticFiles  # noqa: E402
-
-if FRONTEND_DIR.exists():
-    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")

@@ -33,7 +33,7 @@
     "note": null
   },
   "passed": true,
-  "latency_ms": 3.28,
+  "latency_ms": 2.42,
   "model_calls": 0,
   "est_cost_usd": 0.0
 }

@@ -7,14 +7,14 @@
   "actual_output": "Open Kivi and tell Sivi.",
   "expected_action": "REPLACE",
   "actual_action": "REPLACE",
-  "reason": "Replaced 'sibi' with 'Sivi': exact match (surface 1.00) to an active memory (confidence 0.91); context score +0.00. Combined 0.65. Your ASR has mis-spelled 'Sivi' 3x before, so its score was lifted x1.22.",
+  "reason": "Replaced 'sibi' with 'Sivi': exact match (surface 1.00) to an active memory (confidence 0.91); context score +0.00. Combined 1.00. Applied on the first recall: you have corrected this exact mishearing before, so the surrounding context was not required. Your ASR has mis-spelled 'Sivi' 3x before, so its score was lifted x1.22.",
   "scores": {
     "s_surf": 1.0,
     "s_ctx_pos": 0.0,
     "s_ctx_neg": 0.0,
     "s_ctx": 0.0,
     "confidence": 0.91,
-    "combined": 0.654
+    "combined": 1.0
   },
   "asr_text": "open kiwi and tell sibi",
   "formatted_text": "Open kiwi and tell sibi.",
@@ -33,7 +33,7 @@
     "note": null
   },
   "passed": true,
-  "latency_ms": 10.51,
+  "latency_ms": 1.75,
   "model_calls": 0,
   "est_cost_usd": 0.0
 }

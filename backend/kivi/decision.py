@@ -93,8 +93,24 @@ def decide(span_text, span_start, span_end, asr_original, scored) -> SpanDecisio
     boost_max = float(PP.get("combined_boost", 0.35))
     for s in scored:
         c = s["cand"]
-        s["gate"] = _context_gate(s["s_ctx"])
-        s["base"] = round(c.s_surf * c.confidence * s["gate"], 4)
+        gate = _context_gate(s["s_ctx"])
+        # First-recall of the user's own correction: an EXACT match to a stored
+        # alias, on an active memory this user has already corrected before, is
+        # not a guess - so a not-yet-established positive context should not hold
+        # it back. The negative-context KEEP gate (checked later) still protects
+        # cases like "I ate a kiwi".
+        s["gate_forced"] = (
+            gate < 1.0
+            and s["s_ctx"] >= 0.0          # only when context is neutral/positive,
+            and c.status == "active"       # never when the surrounding words lean away
+            and c.match_method == "exact"
+            and c.s_surf >= 0.99
+            and c.personal_prior_n >= 1
+        )
+        if s["gate_forced"]:
+            gate = 1.0
+        s["gate"] = gate
+        s["base"] = round(c.s_surf * c.confidence * gate, 4)
         s["boost"] = round(1.0 + boost_max * max(0.0, min(1.0, c.s_personal)), 4)
         s["combined"] = round(min(1.0, s["base"] * s["boost"]), 4)
     scored.sort(key=lambda s: s["combined"], reverse=True)
@@ -208,6 +224,11 @@ def decide(span_text, span_start, span_end, asr_original, scored) -> SpanDecisio
             f"(surface {cand.s_surf:.2f}) to an active memory (confidence "
             f"{cand.confidence:.2f}); context score {d.s_ctx:+.2f}. Combined {top['combined']:.2f}."
         )
+        if top.get("gate_forced"):
+            d.reason_text += (
+                " Applied on the first recall: you have corrected this exact mishearing "
+                "before, so the surrounding context was not required."
+            )
         d.reason_text += _personal_clause(d, cand, top)
     elif top["combined"] >= T["defer"]:
         d.action = "DEFER"
